@@ -1,0 +1,1 @@
+"""SpareFlow dashboard package."""

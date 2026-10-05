@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.express as px
 from dash import Input, Output, State, callback_context, dash_table, html
@@ -10,26 +9,36 @@ from src.analysis import apply_filters, build_analysis_context
 
 
 STATUS_COLORS = {
-    "SAFE": "#2f9e44",
-    "REORDER": "#f08c00",
-    "CRITICAL": "#d6336c",
-    "STOCKOUT": "#c92a2a",
+    "SAFE": "#16a34a",
+    "REORDER": "#d97706",
+    "CRITICAL": "#dc2626",
+    "STOCKOUT": "#991b1b",
 }
+
+FONT_FAMILY = '"Plus Jakarta Sans", Inter, "Segoe UI", Arial, sans-serif'
+CHART_COLORS = ["#2563eb", "#14b8a6", "#22c55e", "#f59e0b", "#8b5cf6", "#ef4444", "#64748b"]
 
 
 def _empty_figure(title: str):
     fig = px.scatter(title=title)
-    fig.update_layout(template="plotly_white", annotations=[{"text": "No data", "showarrow": False}])
-    return fig
+    fig.update_layout(annotations=[{"text": "No data", "showarrow": False, "font": {"color": "#667085"}}])
+    return _format_fig(fig)
 
 
 def _format_fig(fig):
     fig.update_layout(
         template="plotly_white",
-        margin=dict(l=20, r=20, t=28, b=20),
-        font=dict(family="Inter, Segoe UI, sans-serif", size=12),
+        colorway=CHART_COLORS,
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        margin=dict(l=24, r=18, t=18, b=28),
+        font=dict(family=FONT_FAMILY, size=12, color="#162033"),
         legend_title_text="",
+        hovermode="x unified",
+        autosize=True,
     )
+    fig.update_xaxes(showgrid=False, linecolor="#dbe6f3", zeroline=False, title_font_size=12)
+    fig.update_yaxes(gridcolor="#eef3f8", zeroline=False, title_font_size=12)
     return fig
 
 
@@ -64,8 +73,22 @@ def _metric_table(metrics: pd.DataFrame, table_id: str) -> dash_table.DataTable:
         sort_action="native",
         filter_action="native",
         style_table={"overflowX": "auto"},
-        style_cell={"fontFamily": "Inter, Segoe UI, sans-serif", "fontSize": 12, "padding": "10px"},
-        style_header={"fontWeight": "700", "backgroundColor": "#f1f5f9"},
+        style_cell={
+            "fontFamily": FONT_FAMILY,
+            "fontSize": 12,
+            "padding": "11px 10px",
+            "border": "1px solid #e6edf5",
+            "minWidth": "120px",
+            "maxWidth": "220px",
+            "whiteSpace": "normal",
+        },
+        style_header={
+            "fontWeight": "800",
+            "backgroundColor": "#f8fafc",
+            "color": "#162033",
+            "border": "1px solid #dbe6f3",
+        },
+        style_data={"backgroundColor": "#ffffff", "color": "#162033"},
         style_data_conditional=[
             {
                 "if": {"filter_query": f'{{status}} = "{status}"', "column_id": "status"},
@@ -153,10 +176,10 @@ def register_callbacks(app, df: pd.DataFrame) -> None:
             return [_empty_figure("No data")] * 4
         top_parts = context["by_part"].nlargest(10, "demand")
         return (
-            _format_fig(px.line(context["monthly"], x="month", y="inventory", markers=True)),
-            _format_fig(px.line(context["monthly"], x="month", y="demand", markers=True)),
-            _format_fig(px.bar(context["by_location"], x="location", y="inventory", color="location")),
-            _format_fig(px.bar(top_parts, x="part_id", y="demand", color="demand", color_continuous_scale="Blues")),
+            _format_fig(px.line(context["monthly"], x="month", y="inventory", markers=True, labels={"month": "", "inventory": "Inventory"})),
+            _format_fig(px.line(context["monthly"], x="month", y="demand", markers=True, labels={"month": "", "demand": "Demand"})),
+            _format_fig(px.bar(context["by_location"], x="location", y="inventory", color="location", labels={"location": "", "inventory": "Inventory"})),
+            _format_fig(px.bar(top_parts, x="part_id", y="demand", color="demand", color_continuous_scale="Teal", labels={"part_id": "", "demand": "Demand"})),
         )
 
     @app.callback(
@@ -175,10 +198,10 @@ def register_callbacks(app, df: pd.DataFrame) -> None:
             return [_empty_figure("No data")] * 4
         by_part = context["by_part"].nlargest(15, "demand")
         return (
-            _format_fig(px.area(context["monthly"], x="month", y="demand")),
-            _format_fig(px.bar(by_part, x="part_id", y="demand", color="demand", color_continuous_scale="Teal")),
+            _format_fig(px.area(context["monthly"], x="month", y="demand", labels={"month": "", "demand": "Demand"})),
+            _format_fig(px.bar(by_part, x="part_id", y="demand", color="demand", color_continuous_scale="Teal", labels={"part_id": "", "demand": "Demand"})),
             _format_fig(px.pie(context["by_location"], names="location", values="demand", hole=0.45)),
-            _format_fig(px.histogram(filtered, x="demand", nbins=30)),
+            _format_fig(px.histogram(filtered, x="demand", nbins=30, labels={"demand": "Demand"})),
         )
 
     @app.callback(
@@ -199,10 +222,10 @@ def register_callbacks(app, df: pd.DataFrame) -> None:
         metrics = context["metrics"]
         stockout_parts = metrics.nlargest(15, "stockout_events")
         return (
-            _format_fig(px.line(context["monthly"], x="month", y="stockout", markers=True)),
-            _format_fig(px.bar(context["by_location"], x="location", y="stockout", color="location")),
-            _format_fig(px.bar(stockout_parts, x="part_id", y="stockout_events", color="stockout_rate")),
-            _format_fig(px.scatter(filtered, x="demand", y="inventory", color="stockout", opacity=0.65)),
+            _format_fig(px.line(context["monthly"], x="month", y="stockout", markers=True, labels={"month": "", "stockout": "Stockout"})),
+            _format_fig(px.bar(context["by_location"], x="location", y="stockout", color="location", labels={"location": "", "stockout": "Stockout"})),
+            _format_fig(px.bar(stockout_parts, x="part_id", y="stockout_events", color="stockout_rate", color_continuous_scale="OrRd", labels={"part_id": "", "stockout_events": "Events", "stockout_rate": "Rate"})),
+            _format_fig(px.scatter(filtered, x="demand", y="inventory", color="stockout", opacity=0.65, labels={"demand": "Demand", "inventory": "Inventory", "stockout": "Stockout"})),
             _metric_table(metrics, "risk-data-table"),
         )
 
@@ -235,8 +258,8 @@ def register_callbacks(app, df: pd.DataFrame) -> None:
         )
         status_counts = context["metrics"]["status"].value_counts().rename_axis("status").reset_index(name="count")
         return (
-            _format_fig(px.bar(long_metrics, x="part_id", y="value", color="metric", barmode="group")),
-            _format_fig(px.bar(safety_metrics, x="part_id", y="value", color="metric", barmode="group")),
+            _format_fig(px.bar(long_metrics, x="part_id", y="value", color="metric", barmode="group", labels={"part_id": "", "value": "Units", "metric": ""})),
+            _format_fig(px.bar(safety_metrics, x="part_id", y="value", color="metric", barmode="group", labels={"part_id": "", "value": "Units", "metric": ""})),
             _format_fig(px.pie(status_counts, names="status", values="count", color="status", color_discrete_map=STATUS_COLORS)),
             _metric_table(context["metrics"], "reorder-data-table"),
         )

@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import dash_bootstrap_components as dbc
 import pandas as pd
-from dash import Dash, Input, Output, dcc, html
+from dash import Dash
 
 from dashboard.callbacks import register_callbacks
 from dashboard.layout import create_layout
@@ -23,9 +22,15 @@ df = load_dataset()
 
 app = Dash(
     __name__,
-    external_stylesheets=[dbc.themes.BOOTSTRAP],
+    external_scripts=[
+        "https://cdn.tailwindcss.com",
+        {"src": "https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js", "defer": True},
+    ],
+    external_stylesheets=[
+        "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
+    ],
     suppress_callback_exceptions=True,
-    title="SpareFlow",
+    title="Inventara",
 )
 server = app.server
 app.layout = create_layout(df)

@@ -1,35 +1,73 @@
 from __future__ import annotations
 
-import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 
-def kpi_card(title: str, value_id: str, accent: str) -> dbc.Card:
-    return dbc.Card(
-        dbc.CardBody(
+def kpi_card(title: str, value_id: str, accent: str) -> html.Div:
+    return html.Div(
+        html.Div(
             [
-                html.Div(title, className="kpi-title"),
-                html.Div(id=value_id, className="kpi-value"),
-            ]
+                html.Div(
+                    [
+                        html.Div(className=f"kpi-dot dot-{accent}"),
+                        html.Div("Live", className="kpi-pill"),
+                    ],
+                    className="kpi-topline",
+                ),
+                html.Div(
+                    [
+                        html.Div(title, className="kpi-title"),
+                        html.Div(id=value_id, className="kpi-value"),
+                    ],
+                    className="kpi-copy",
+                ),
+            ],
+            className="kpi-body",
         ),
-        className=f"kpi-card kpi-{accent}",
+        className=f"kpi-card kpi-{accent} rounded-lg bg-white",
     )
 
 
-def chart_card(title: str, graph_id: str, class_name: str = "") -> dbc.Card:
-    return dbc.Card(
+def chart_card(title: str, graph_id: str, class_name: str = "") -> html.Div:
+    return html.Div(
         [
-            dbc.CardHeader(title),
-            dbc.CardBody(dcc.Graph(id=graph_id, config={"displayModeBar": False})),
+            html.Div(html.Div(title, className="chart-title"), className="chart-header"),
+            html.Div(
+                dcc.Graph(
+                    id=graph_id,
+                    config={"displayModeBar": False, "responsive": True},
+                    className="chart-graph",
+                    style={"height": "320px", "width": "100%"},
+                ),
+                className="chart-body",
+            ),
         ],
-        className=f"chart-card {class_name}".strip(),
+        className=f"chart-card {class_name} rounded-lg bg-white".strip(),
     )
 
 
 def sidebar() -> html.Aside:
     return html.Aside(
         [
-            html.Div("SpareFlow", className="brand"),
+            html.Div(
+                [
+                    html.Div("IV", className="brand-mark"),
+                    html.Div(
+                        [
+                            html.Div("Inventara", className="brand-name"),
+                            html.Div("Aviation Inventory", className="brand-tagline"),
+                        ],
+                    ),
+                ],
+                className="brand",
+            ),
+            html.Div(
+                [
+                    html.Div("Portfolio Dashboard", className="sidebar-label"),
+                    html.Div("Demand, stock health, and reorder intelligence.", className="sidebar-copy"),
+                ],
+                className="sidebar-intro",
+            ),
             html.Nav(
                 [
                     html.Button("Overview", id="nav-overview", n_clicks=0, className="nav-link active"),

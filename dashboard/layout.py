@@ -11,6 +11,8 @@ def create_layout(df: pd.DataFrame) -> html.Div:
     max_date = df["date"].max()
     part_options = [{"label": part, "value": part} for part in sorted(df["part_id"].unique())]
     location_options = [{"label": loc, "value": loc} for loc in sorted(df["location"].unique())]
+    record_count = f"{len(df):,}"
+    part_count = f"{df['part_id'].nunique():,}"
 
     return html.Div(
         [
@@ -22,34 +24,60 @@ def create_layout(df: pd.DataFrame) -> html.Div:
                         [
                             html.Div(
                                 [
-                                    html.H1("Inventory & Spare Parts Analytics"),
-                                    html.P("Demand, inventory, stockout, lead time, and reorder monitoring."),
+                                    html.Div("Inventory Intelligence", className="eyebrow"),
+                                    html.H1("Inventara Inventory Dashboard"),
+                                    html.P("Operational command view for demand, stock health, stockout risk, and reorder planning."),
+                                    html.Div(
+                                        [
+                                            html.Span(f"{record_count} records", className="summary-chip"),
+                                            html.Span(f"{part_count} spare parts", className="summary-chip"),
+                                        ],
+                                        className="summary-row",
+                                    ),
                                 ],
                                 className="page-heading",
                             ),
                             html.Div(
                                 [
-                                    dcc.DatePickerRange(
-                                        id="date-filter",
-                                        min_date_allowed=min_date,
-                                        max_date_allowed=max_date,
-                                        start_date=min_date,
-                                        end_date=max_date,
-                                        display_format="MMM YYYY",
+                                    html.Div(
+                                        [
+                                            html.Label("Period", className="filter-label"),
+                                            dcc.DatePickerRange(
+                                                id="date-filter",
+                                                min_date_allowed=min_date,
+                                                max_date_allowed=max_date,
+                                                start_date=min_date,
+                                                end_date=max_date,
+                                                display_format="MMM YYYY",
+                                            ),
+                                        ],
+                                        className="filter-group",
                                     ),
-                                    dcc.Dropdown(
-                                        id="location-filter",
-                                        options=location_options,
-                                        multi=True,
-                                        placeholder="Location",
-                                        className="filter",
+                                    html.Div(
+                                        [
+                                            html.Label("Location", className="filter-label"),
+                                            dcc.Dropdown(
+                                                id="location-filter",
+                                                options=location_options,
+                                                multi=True,
+                                                placeholder="All locations",
+                                                className="filter",
+                                            ),
+                                        ],
+                                        className="filter-group",
                                     ),
-                                    dcc.Dropdown(
-                                        id="part-filter",
-                                        options=part_options,
-                                        multi=True,
-                                        placeholder="Spare part",
-                                        className="filter",
+                                    html.Div(
+                                        [
+                                            html.Label("Spare Part", className="filter-label"),
+                                            dcc.Dropdown(
+                                                id="part-filter",
+                                                options=part_options,
+                                                multi=True,
+                                                placeholder="All spare parts",
+                                                className="filter",
+                                            ),
+                                        ],
+                                        className="filter-group",
                                     ),
                                 ],
                                 className="filters",

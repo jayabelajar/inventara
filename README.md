@@ -4,13 +4,13 @@ Inventara is an aviation spare parts inventory analytics dashboard built with Py
 
 ## Preview
 
-![Inventara overview dashboard](screenshots/overview-dashboard.png)
+| Overview Dashboard | Demand Analytics |
+| --- | --- |
+| ![Inventara overview dashboard](screenshots/overview-dashboard.png) | ![Inventara demand analytics](screenshots/demand-analytics.png) |
 
-Additional dashboard views:
-
-- [Demand Analytics](screenshots/demand-analytics.png)
-- [Stockout Risk](screenshots/stockout-risk.png)
-- [Reorder Analysis](screenshots/reorder-analysis.png)
+| Stockout Risk | Reorder Analysis |
+| --- | --- |
+| ![Inventara stockout risk](screenshots/stockout-risk.png) | ![Inventara reorder analysis](screenshots/reorder-analysis.png) |
 
 ## Key Features
 

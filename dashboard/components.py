@@ -61,13 +61,6 @@ def sidebar() -> html.Aside:
                 ],
                 className="brand",
             ),
-            html.Div(
-                [
-                    html.Div("Portfolio Dashboard", className="sidebar-label"),
-                    html.Div("Demand, stock health, and reorder intelligence.", className="sidebar-copy"),
-                ],
-                className="sidebar-intro",
-            ),
             html.Nav(
                 [
                     html.Button("Overview", id="nav-overview", n_clicks=0, className="nav-link active"),

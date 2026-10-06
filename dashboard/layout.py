@@ -24,8 +24,7 @@ def create_layout(df: pd.DataFrame) -> html.Div:
                         [
                             html.Div(
                                 [
-                                    html.Div("Inventory Intelligence", className="eyebrow"),
-                                    html.H1("Inventara Inventory Dashboard"),
+                                    html.H1("Dashboard"),
                                     html.P("Operational command view for demand, stock health, stockout risk, and reorder planning."),
                                     html.Div(
                                         [

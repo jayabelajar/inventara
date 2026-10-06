@@ -104,28 +104,6 @@ button {
   font-weight: 650;
 }
 
-.sidebar-intro {
-  margin-bottom: 22px;
-  padding: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.sidebar-label {
-  color: #e2e8f0;
-  font-size: 0.75rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.sidebar-copy {
-  margin-top: 6px;
-  color: #a8b3c2;
-  font-size: 0.84rem;
-  line-height: 1.45;
-}
-
 .nav-list {
   display: grid;
   gap: 8px;
@@ -177,10 +155,12 @@ button {
 
 .topbar {
   display: grid;
-  grid-template-columns: minmax(280px, 0.9fr) minmax(520px, 1.28fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
   align-items: stretch;
   margin-bottom: 18px;
+  position: relative;
+  z-index: 20;
 }
 
 .page-heading,
@@ -194,22 +174,15 @@ button {
 
 .page-heading {
   display: flex;
-  min-height: 178px;
+  min-height: 176px;
   flex-direction: column;
   justify-content: space-between;
   padding: 22px;
 }
 
-.eyebrow {
-  color: var(--teal);
-  font-size: 0.74rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
 .page-heading h1 {
   max-width: 760px;
-  margin: 10px 0 8px;
+  margin: 0 0 8px;
   color: #0f172a;
   font-size: clamp(1.55rem, 2vw, 2.1rem);
   font-weight: 800;
@@ -246,15 +219,23 @@ button {
 
 .filters {
   display: grid;
-  grid-template-columns: minmax(220px, 1.1fr) repeat(2, minmax(170px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  align-items: start;
+  align-items: stretch;
   padding: 18px;
+  min-height: 176px;
+  position: relative;
+  z-index: 30;
 }
 
 .filter-group,
 .filter {
   min-width: 0;
+}
+
+.filter-group {
+  position: relative;
+  z-index: 31;
 }
 
 .filter-label {
@@ -340,6 +321,17 @@ button {
   border-color: var(--line);
   border-radius: 8px;
   box-shadow: var(--shadow-soft);
+  z-index: 3000;
+}
+
+.DateRangePicker_picker {
+  z-index: 3000;
+}
+
+.CalendarMonthGrid,
+.DayPicker,
+.DayPicker_transitionContainer {
+  border-radius: 8px;
 }
 
 .kpi-grid,
@@ -549,10 +541,6 @@ button {
     margin-bottom: 12px;
   }
 
-  .sidebar-intro {
-    display: none;
-  }
-
   .nav-list {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -572,7 +560,7 @@ button {
   }
 
   .filters {
-    grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(160px, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -587,7 +575,11 @@ button {
   }
 
   .page-heading {
-    min-height: auto;
+    min-height: 156px;
+  }
+
+  .filters {
+    min-height: 156px;
   }
 
   .chart-card {
@@ -643,6 +635,7 @@ button {
 
   .page-heading,
   .filters {
+    min-height: auto;
     padding: 16px;
   }
 
